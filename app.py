@@ -4,6 +4,25 @@ import xml.etree.ElementTree as ET
 import base64
 import re
 
+
+def login_ediwin():
+        resp = requests.post(
+                    f"{EDIWIN_BASE}/api/main/login",
+                    json={"user": EDIWIN_USER, "password": EDIWIN_PASSWORD, "domain": "businessmail"},
+                    headers={"Accept-Encoding": "identity", "Content-Type": "application/json"},
+                    allow_redirects=True
+        )
+        try:
+                    data = resp.json()
+                    token = data.get("tokena") or data.get("token")
+                    if token:
+                                    return token
+                            except:
+                                        pass
+                                    for cookie in resp.cookies:
+                                                if "token" in cookie.name.lower():
+                                                                return cookie.value
+                                                        return None
 app = Flask(__name__)
 
 EDIWIN_BASE = "https://ediwin02.edicomgroup.com"
